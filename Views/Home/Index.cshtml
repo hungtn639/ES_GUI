@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Manage Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="alert" id="alert-success">
+    <strong>Success</strong>
+</div>
+
+<div class="alert" id="alert-error">
+    <strong>Error</strong>
+</div>
+
+<div class="table-title">
+    <div class="row">
+        <div class="col-6">
+            <h2>Manage Index</h2>
+        </div>
+        <div class="col-6">
+            <button type="button" class="btn btn-primary" onclick="GetIndexes(false)"><span class="glyphicon glyphicon-refresh"></span></button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-modal"><span class="glyphicon glyphicon-plus"></span></button>
+        </div>
+    </div>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th style="text-transform:uppercase">index</th>
+            <th style="text-transform:uppercase">status</th>
+            <th style="text-transform:uppercase">health</th>
+            <th style="text-transform:uppercase">docs.count</th>
+            <th style="text-transform:uppercase">store.size</th>
+            <th style="width:160px;text-transform:uppercase">Action</th>
+        </tr>
+    </thead>
+    <tbody id="tbody-index">
+    
+    </tbody>
+</table>
+
+<div class="modal" id="create-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Create Index</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" placeholder="Name" id="index">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="CreateIndex($('#index').val())">Create</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" value="" id="indexAddDocuments" />
+
+<div class="modal" id="addDocument-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Document</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="file" class="form-control-file border" id="file">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="AddDocuments()">Add</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ajaxStart(function () {
+        $.LoadingOverlay("show", {
+            imageColor: "rgba(0, 0, 255, 1)",
+            size: "5%"
+        });
+    });
+
+    $(document).ajaxStop(function () {
+        $.LoadingOverlay("hide");
+    });
+
+    $(document).ready(function () {
+        $("#alert-success").hide();
+        $("#alert-error").hide();
+        GetIndexes(false);
+    });
+</script>
