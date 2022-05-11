@@ -202,11 +202,13 @@ namespace ES_GUI.Controllers
                     string arrayOfDocumentAsString = r.ReadToEnd();
                     JArray jArray = JsonConvert.DeserializeObject<JArray>(arrayOfDocumentAsString);
                     string jsonDocumentAsString;
+                    JObject jsonDocument;
                     for (int i = 0; i < jArray.Count; i++)
                     {
                         jsonDocumentAsString = jArray[i].ToString();
                         jsonDocumentAsString = jsonDocumentAsString.Replace(Environment.NewLine, string.Empty);
-                        response = client.PostAsync("AddDocument/" + index + "/" + jsonDocumentAsString, null).Result;
+                        jsonDocument = JObject.Parse(jsonDocumentAsString);
+                        response = client.PostAsync("AddDocument/" + index + "/" + jsonDocument["id"].ToString() + "/" + jsonDocumentAsString, null).Result;
                         if (!response.IsSuccessStatusCode)
                         {
                             return new ContentResult
