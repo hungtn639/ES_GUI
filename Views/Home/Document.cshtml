@@ -28,6 +28,26 @@
     </div>
 </div>
 
+<div class="container-fluid" id="area_search">
+    <div class="row">
+        <div class="col-10" id="field_search">
+            
+        </div>
+        <div class="col-2" id="operator_search">
+            <div class="form-check-inline" id="rdOperatorOr">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="rdOperator" value="OR" checked>OR
+                </label>
+            </div>
+            <div class="form-check-inline" id="rdOperatorAnd">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="rdOperator" value="AND">AND
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
 <table class="table table-hover">
     <thead id="thead-document">
 
@@ -52,5 +72,6 @@
         $("#alert-success").hide();
         $("#alert-error").hide();
         GetDocuments($("#index").val(), false);
+        GenerateFieldSearch($("#index").val());
     });
 </script>

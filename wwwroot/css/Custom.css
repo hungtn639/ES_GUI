@@ -50,3 +50,25 @@ td {
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
+
+#area_search {
+    margin-bottom: 30px;
+}
+
+#field_search, #operator_search {
+    height: 50px;
+    padding-top: 10px;
+    border: 2px solid #435d7d;
+}
+
+input[type="checkbox"] {
+    margin-left: 15px !important;
+}
+
+#rdOperatorOr {
+    float: left;
+}
+
+#rdOperatorAnd {
+    float: right;
+}

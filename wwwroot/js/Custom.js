@@ -208,9 +208,19 @@ function SearchDocuments(index, query) {
     if (!query) {
         GetDocuments(index, false);
     } else {
+        var listFieldSearch = '';
+        $('input[type=checkbox]').each(function () {
+            var fieldName = (this.checked ? $(this).val() : '');
+            if (fieldName != '') {
+                listFieldSearch += (listFieldSearch == '' ? fieldName : ',' + fieldName);
+            }
+        });
+        var operatorSearch = $('input[name="rdOperator"]:checked').val();
         var formData = new FormData();
         formData.append("index", index);
         formData.append("query", query);
+        formData.append("listFieldSearch", listFieldSearch);
+        formData.append("operatorSearch", operatorSearch);
         $.ajax({
             type: 'POST',
             url: '/Home/SearchDocuments',
@@ -227,4 +237,38 @@ function SearchDocuments(index, query) {
             }
         });
     }
+}
+
+function GenerateFieldSearch(index) {
+    var formData = new FormData();
+    formData.append("index", index);
+    $.ajax({
+        type: 'POST',
+        url: '/Home/GetDocuments',
+        data: formData,
+        processData: false,
+        contentType: false
+    }).done(function (response) {
+        if (response.data.length > 0) {
+            var document = response.data[0];
+            var fields = Object.keys(document._source);
+            var htmlString = '';
+            var checkboxId;
+            var checkboxValue;
+            var checkboxText;
+            for (i = 0; i < fields.length; i++) {
+                if (fields[i].toUpperCase() != 'ID') {
+                    checkboxId = 'chk_' + fields[i];
+                    checkboxValue = fields[i];
+                    checkboxText = fields[i].toUpperCase();
+                    htmlString += '<div class="form-check-inline"><label class="form-check-label" for="' + checkboxId + '"><input type="checkbox" class="form-check-input" id="' + checkboxId + '" value="' + checkboxValue + '">' + checkboxText + '</label></div>';
+                }
+            }
+            $("#field_search").html(htmlString);
+        } else {
+            $("#field_search").html('');
+            $("#field_search").hide();
+            $("#operator_search").hide();
+        }
+    });
 }

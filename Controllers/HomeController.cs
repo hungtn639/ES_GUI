@@ -266,11 +266,45 @@ namespace ES_GUI.Controllers
             }
         }
 
-        public ContentResult SearchDocuments(string index, string query)
+        public ContentResult SearchDocuments(string index, string query, string listFieldSearch, string operatorSearch)
         {
             try
             {
-                response = client.GetAsync("SearchDocuments/" + index + "/" + query).Result;
+                string jsonQueryAsString;
+                if (string.IsNullOrEmpty(listFieldSearch))
+                {
+                    jsonQueryAsString = "{\"query\":{\"query_string\":{\"query\":\"" + query + "\"}}}";
+                }
+                else
+                {
+                    string[] fieldArray = listFieldSearch.Split(",");
+                    if (fieldArray.Length == 1)
+                    {
+                        jsonQueryAsString = "{\"query\":{\"match\":{\"" + fieldArray[0] + "\":{\"query\":\"" + query + "\"}}}}";
+                    }
+                    else
+                    {
+                        string operatorName;
+                        if (operatorSearch == "AND")
+                        {
+                            operatorName = "must";
+                        }
+                        else
+                        {
+                            operatorName = "should";
+                        }
+                        string str1 = "{\"query\":{\"bool\":{\"" + operatorName + "\":[";
+                        string str2 = "";
+                        foreach(string field in fieldArray)
+                        {
+                            string str = "{\"match\":{\"" + field + "\":\"" + query + "\"}}";
+                            str2 += (str2 == "" ? str : ("," + str));
+                        }
+                        string str3 = "]}}}";
+                        jsonQueryAsString = str1 + str2 + str3;
+                    }
+                }
+                response = client.GetAsync("SearchDocuments/" + index + "/" + jsonQueryAsString).Result;
                 if (!response.IsSuccessStatusCode)
                 {
                     return new ContentResult
